@@ -34,6 +34,8 @@ vrep.simxSetFloatingParameter(clientID, vrep.sim_floatparam_simulation_time_step
 vrep.simxSynchronous(clientID, True) 
 vrep.simxStartSimulation(clientID, vrep.simx_opmode_oneshot)
 
+# —————————————————————————————————————————————————————————————————
+
 # 然后读取Base和Joint的句柄
 jointHandle = np.zeros((jointNum,), dtype=np.int) # 注意是整型
 for i in range(jointNum):
@@ -55,13 +57,11 @@ vrep.simxSynchronousTrigger(clientID)  # 让仿真走一步
 while vrep.simxGetConnectionId(clientID) != -1:
     currCmdTime=vrep.simxGetLastCmdTime(clientID)  # 记录当前时间
     dt = currCmdTime - lastCmdTime # 记录时间间隔，用于控制
-    # ***
-    # ***
-    # ***
+
             # 读取当前的状态值，之后都用buffer形式读取
     for i in range(jointNum):
         _, jpos = vrep.simxGetJointPosition(clientID, jointHandle[i], vrep.simx_opmode_buffer)
-        print(round(jpos * RAD2DEG, 2))
+        # print(round(jpos * RAD2DEG, 2))
         jointConfig[i] = jpos
 
         # 控制命令需要同时方式，故暂停通信，用于存储所有控制命令一起发送
